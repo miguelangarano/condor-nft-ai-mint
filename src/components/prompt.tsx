@@ -1,4 +1,4 @@
-import { Component, createSignal } from "solid-js";
+import { Component, createSignal, JSXElement } from "solid-js";
 import { makeHttpRequest } from "../connection/api";
 
 type Props = {
@@ -6,7 +6,7 @@ type Props = {
 	setImageData: (title: string, prompt: string, imageData: string) => void;
 };
 
-const Prompt: Component = (props: Props) => {
+const Prompt = (props: Props): JSXElement => {
 	const [title, setTitle] = createSignal("");
 	const [prompt, setPrompt] = createSignal("");
 	const [image, setImage] = createSignal("");
@@ -76,8 +76,8 @@ const Prompt: Component = (props: Props) => {
 					Prompt your text and generate your AI image
 				</h2>
 			</article>
-			<div class="w-full flex flex-row justify-center gap-8">
-				<div class="card w-96 bg-base-100 shadow-xl p-10 gap-8 items-center">
+			<div class="w-full flex flex-col md:flex-row justify-center items-center gap-8">
+				<div class="card w-full md:w-96 bg-base-100 shadow-xl p-10 gap-8 items-center">
 					<article class="prose lg:prose-xl">
 						<h3 class="text-center">Input your prompt</h3>
 					</article>
@@ -96,14 +96,16 @@ const Prompt: Component = (props: Props) => {
 						class="input input-bordered w-full max-w-xs shadow-xl"
 					/>
 					<button
-						class={`btn btn-wide ${loading() ? "loading btn-disabled" : ""}`}
+						class={`btn btn-wide ${
+							loading() ? "loading btn-disabled" : ""
+						}`}
 						disabled={loading()}
 						onClick={generateImage}
 					>
 						Generate image
 					</button>
 				</div>
-				<div class="card w-96 bg-base-100 shadow-xl p-2 flex items-center justify-center">
+				<div class="card w-full md:w-96 bg-base-100 shadow-xl p-2 flex items-center justify-center">
 					<div class="avatar w-full">
 						<div class="w-full rounded flex items-center justify-center">
 							{image() === "" && loading() && (

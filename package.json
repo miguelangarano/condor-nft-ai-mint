@@ -44,6 +44,8 @@
     "axios": "^1.3.4",
     "daisyui": "^2.51.5",
     "ethers": "^5.0.0",
+    "jdenticon": "^3.2.0",
+    "nft.storage": "^7.0.3",
     "solid-js": "^1.6.10"
   }
 }

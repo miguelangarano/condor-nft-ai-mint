@@ -1,26 +1,35 @@
-import type { Component } from "solid-js";
+import { JSXElement } from "solid-js";
 
 type Props = {
 	currentStep: number;
 	nextStep: () => void;
 	disableNextStep: () => void;
 	nextStepEnabled: boolean;
+	account?: string;
 };
 
-const BottomBar: Component = (props: Props) => {
+const BottomBar = (props: Props): JSXElement => {
 	const pressHandler = () => {
 		props.nextStep();
-		props.disableNextStep();
+		if (props.currentStep < 2) props.disableNextStep();
 	};
 
 	return (
-		<div class="w-full flex flex-col items-center justify-center absolute bottom-0 left-0 gap-y-10 bg-gray-800 drop-shadow-2xl py-4">
+		<div class="w-full flex flex-col items-center justify-center fixed bottom-0 left-0 gap-y-10 bg-gray-800 drop-shadow-2xl py-4">
 			<button
 				class={`btn ${props.nextStepEnabled ? "" : "btn-disabled"}`}
-				disabled={!props.nextStepEnabled}
+				disabled={
+					!props.nextStepEnabled ||
+					props.account == undefined ||
+					props.account == ""
+				}
 				onClick={pressHandler}
 			>
-				{props.currentStep == 0 ? "Start" : "Next"}
+				{props.currentStep == 0
+					? "Start"
+					: props.currentStep == 3
+					? "See NFT's"
+					: "Next"}
 			</button>
 			<ul class="steps">
 				<li

@@ -7,6 +7,20 @@ const config: HardhatUserConfig = {
 	paths: {
 		tests: "./__tests__",
 	},
+	networks: {
+		hardhat: {
+			chainId: 1337,
+			gas: "auto",
+			gasPrice: "auto",
+			allowUnlimitedContractSize: true
+		},
+		localhost: {
+			chainId: 1337,
+			gas: "auto",
+			gasPrice: "auto",
+			allowUnlimitedContractSize: true
+		}
+	}
 };
 
 export default config;

@@ -7,3 +7,4 @@ typechain-types
 coverage.json
 coverage-final.json
 coverage
+.DS_Store
