@@ -14,7 +14,7 @@ const Home = (props: Props): JSXElement => {
 		<div class="w-full flex flex-col items-center">
 			<div class="card lg:w-1/2 md:w-1/2 sm:w-full  bg-base-100 shadow-xl p-10 items-center">
 				<article class="prose lg:prose-xl">
-					<h1 class="text-center">Condor NFT Mint</h1>
+					<h1 class="text-center">Condor AI NFT Mint</h1>
 					<h4 class="text-justify">
 						This app will allow you to generate an prompted AI
 						generated image with Stable diffussion API tool. After

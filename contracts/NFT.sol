@@ -21,7 +21,7 @@ contract NFT is ERC721URIStorage {
         cost = _cost;
     }
 
-    function mint(string memory tokenURI) public payable {
+    function mint(string memory tokenURI) public payable returns (uint256) {
         require(msg.value >= cost);
 
         _tokenIds.increment();
@@ -29,6 +29,7 @@ contract NFT is ERC721URIStorage {
         uint256 newItemId = _tokenIds.current();
         _mint(msg.sender, newItemId);
         _setTokenURI(newItemId, tokenURI);
+        return newItemId;
     }
 
     function totalSupply() public view returns (uint256) {

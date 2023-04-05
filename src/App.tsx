@@ -7,6 +7,9 @@ import Mint from "./components/mint";
 import Prompt from "./components/prompt";
 import Success from "./components/success";
 import TopBar from "./components/top-bar";
+import config from "./contract-config.json";
+import NFT from "./abis/NFT.json";
+import { useNavigate } from "@solidjs/router";
 
 declare global {
 	interface Window {
@@ -15,6 +18,7 @@ declare global {
 }
 
 const App: Component = () => {
+	const navigate = useNavigate();
 	const [currentAccount, setCurrentAccount] = createSignal("");
 	const [currentStep, setCurrentStep] = createSignal<number>(0);
 	const [nextStepEnabled, setNextStepEnabled] = createSignal(true);
@@ -23,21 +27,48 @@ const App: Component = () => {
 		prompt: string;
 		image: string;
 	}>({ title: "", prompt: "", image: "" });
-	const [provider, setProvider] =
+	const [currentProvider, setCurrentProvider] =
 		createSignal<ethers.providers.Web3Provider>();
+	const [tokensAmount, setTokensAmount] = createSignal(0);
+	const [allWallets, setAllWallets] = createSignal<string[]>([]);
 
-	const loadBlockchainData = async () => {
-		console.log("loading blockchain data", window.ethereum);
+	const connectToDefaultWallet = async () => {
 		if (window.ethereum) {
-			const prov = new ethers.providers.Web3Provider(window.ethereum);
-			console.log(prov);
-			setProvider(prov);
+			const provider = new ethers.providers.Web3Provider(window.ethereum);
+			console.log(provider);
+			setCurrentProvider(provider);
+			const accounts = await window.ethereum.request({
+				method: "eth_requestAccounts",
+			});
+			const account = await provider.getSigner().getAddress();
+			console.log("account", account, accounts);
+			setAllWallets(accounts);
+			if (account) {
+				setCurrentAccount(account);
+			}
+			if (account && provider) {
+				loadBlockchainData(account, provider);
+			}
 		}
 	};
 
 	onMount(() => {
-		loadBlockchainData();
+		connectToDefaultWallet();
 	});
+
+	const loadBlockchainData = async (
+		currentWalletAddress: string,
+		provider: ethers.providers.Web3Provider
+	) => {
+		const network = await provider.getNetwork();
+		const nft = new ethers.Contract(
+			config[network.chainId].nft.address,
+			NFT,
+			provider
+		);
+		const tokensAmount = await nft.balanceOf(currentWalletAddress);
+		setTokensAmount(tokensAmount.toNumber());
+	};
 
 	const renderCurrentStepComponent = () => {
 		switch (currentStep()) {
@@ -45,7 +76,7 @@ const App: Component = () => {
 				return (
 					<Home
 						account={currentAccount()}
-						connect={connectToWallet}
+						connect={connectToDefaultWallet}
 					/>
 				);
 			case 1:
@@ -64,7 +95,8 @@ const App: Component = () => {
 					<Mint
 						enableNextStep={() => setNextStepEnabled(true)}
 						imageData={imageData()}
-						provider={provider()}
+						provider={currentProvider()}
+						nextStep={() => setCurrentStep(currentStep() + 1)}
 					/>
 				);
 			case 3:
@@ -72,20 +104,12 @@ const App: Component = () => {
 		}
 	};
 
-	const connectToWallet = async () => {
-		if (window.ethereum) {
-			const accounts = await window.ethereum.request({
-				method: "eth_requestAccounts",
-			});
-			const account = ethers.utils.getAddress(accounts[0]);
-			console.log("account", account, accounts);
-			setCurrentAccount(account);
-		}
-	};
-
 	return (
 		<div class="w-screen h-screen bg-gray-800 flex-row lg:p-10 relative">
-			<TopBar account={currentAccount()} connect={connectToWallet} />
+			<TopBar
+				account={currentAccount()}
+				connect={connectToDefaultWallet}
+			/>
 			<div class="flex-1 overflow-y-scroll bg-gray-800 pb-[80%] md:pb-[25%] pt-4 px-2">
 				{renderCurrentStepComponent()}
 			</div>
@@ -95,6 +119,7 @@ const App: Component = () => {
 				nextStepEnabled={nextStepEnabled()}
 				disableNextStep={() => setNextStepEnabled(false)}
 				account={currentAccount()}
+				showNFTs={() => navigate("/list", { replace: true })}
 			/>
 		</div>
 	);

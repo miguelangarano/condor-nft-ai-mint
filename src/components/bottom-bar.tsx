@@ -6,12 +6,17 @@ type Props = {
 	disableNextStep: () => void;
 	nextStepEnabled: boolean;
 	account?: string;
+	showNFTs: () => void;
 };
 
 const BottomBar = (props: Props): JSXElement => {
 	const pressHandler = () => {
+		if(props.currentStep == 3) {
+			props.showNFTs();
+			return;
+		}
 		props.nextStep();
-		if (props.currentStep < 2) props.disableNextStep();
+		if (props.currentStep < 3) props.disableNextStep();
 	};
 
 	return (

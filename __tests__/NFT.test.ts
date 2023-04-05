@@ -43,6 +43,16 @@ describe("NFT", () => {
 	});
 
 	describe("Minting", () => {
+		it("Returns newItemID", async () => {
+			const transaction = await nft
+				.connect(minter)
+				.mint(URL, { value: COST });
+			const result = await transaction.wait();
+			const [transferEvent] = result.events;
+			const { tokenId } = transferEvent.args;
+			expect(tokenId).to.be.equal("2");
+		});
+
 		it("Returns owner", async () => {
 			const result = await nft.ownerOf("1");
 			expect(result).to.be.equal(minter.address);

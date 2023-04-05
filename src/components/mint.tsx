@@ -6,6 +6,7 @@ import abi from "../abis/NFT.json";
 
 type Props = {
 	enableNextStep: () => void;
+	nextStep: () => void;
 	imageData: { title: string; prompt: string; image: string };
 	provider: ethers.providers.Web3Provider | undefined;
 };
@@ -24,7 +25,12 @@ const Mint = (props: Props): JSXElement => {
 		});
 		const uploadData = await uploadImage(image);
 		if (!uploadData) return;
-		mintImage(uploadData.nft, uploadData.url);
+		mintImage(
+			uploadData.nft,
+			uploadData.url,
+			props.imageData.title,
+			props.imageData.prompt
+		);
 	};
 
 	const uploadImage = async (
@@ -37,8 +43,9 @@ const Mint = (props: Props): JSXElement => {
 			});
 
 			// call client.store, passing in the image & metadata
+			const blob = new Blob([image], { type: "image/jpeg" });
 			const { ipnft } = await nftstorage.store({
-				image,
+				image: blob,
 				name: props.imageData.title,
 				description: props.imageData.prompt,
 			});
@@ -60,26 +67,39 @@ const Mint = (props: Props): JSXElement => {
 		}
 	};
 
-	const mintImage = async (nft: ethers.Contract, url: string) => {
+	const mintImage = async (
+		nft: ethers.Contract,
+		url: string,
+		name: string,
+		description: string
+	) => {
 		try {
 			const signer = props.provider?.getSigner();
 			if (signer) {
-				console.log(
-					"signer",
-					signer,
-					import.meta.env.VITE_CURRENCY_VALUE,
-					import.meta.env.VITE_CURRENCY_DIGITS
-				);
 				const transaction = await nft.connect(signer).mint(url, {
 					value: ethers.utils.parseUnits(
 						import.meta.env.VITE_CURRENCY_VALUE,
 						import.meta.env.VITE_CURRENCY_DIGITS
-					)
+					),
 				});
-				await transaction.wait();
+				const result = await transaction.wait();
+				const [transferEvent] = result.events;
+				const { tokenId } = transferEvent.args;
+				const currentTokenIDs = localStorage.getItem("tokenIDs");
+				if (currentTokenIDs) {
+					const idsObject = JSON.parse(currentTokenIDs);
+					idsObject.push({ ...tokenId, name, description, url });
+					localStorage.setItem("tokenIDs", JSON.stringify(idsObject));
+				} else {
+					localStorage.setItem(
+						"tokenIDs",
+						JSON.stringify([{ ...tokenId, name, description, url }])
+					);
+				}
 				alert("Image minted successfully");
 				setLoading(false);
 				props.enableNextStep();
+				props.nextStep();
 			} else {
 				setLoading(false);
 				alert("Error connecting to wallet");

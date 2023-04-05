@@ -99,7 +99,7 @@ const Prompt = (props: Props): JSXElement => {
 						class={`btn btn-wide ${
 							loading() ? "loading btn-disabled" : ""
 						}`}
-						disabled={loading()}
+						disabled={loading() || title() === "" || prompt() === ""}
 						onClick={generateImage}
 					>
 						Generate image
