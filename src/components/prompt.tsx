@@ -23,7 +23,6 @@ const Prompt = (props: Props): JSXElement => {
 					setLoadingProgress(1);
 				}
 			}, 1000);
-			console.log("ENVS::", import.meta.env.VITE_API_URI, import.meta.env.VITE_API_KEY)
 			makeHttpRequest(
 				import.meta.env.VITE_API_URI,
 				"POST",
@@ -99,7 +98,9 @@ const Prompt = (props: Props): JSXElement => {
 						class={`btn btn-wide ${
 							loading() ? "loading btn-disabled" : ""
 						}`}
-						disabled={loading() || title() === "" || prompt() === ""}
+						disabled={
+							loading() || title() === "" || prompt() === ""
+						}
 						onClick={generateImage}
 					>
 						Generate image
