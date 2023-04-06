@@ -23,6 +23,7 @@ const Prompt = (props: Props): JSXElement => {
 					setLoadingProgress(1);
 				}
 			}, 1000);
+			console.log("ENVS::", import.meta.env.VITE_API_URI, import.meta.env.VITE_API_KEY)
 			makeHttpRequest(
 				import.meta.env.VITE_API_URI,
 				"POST",
