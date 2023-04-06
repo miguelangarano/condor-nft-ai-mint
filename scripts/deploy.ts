@@ -4,7 +4,7 @@ import { ethers } from "hardhat";
 async function main() {
   const NAME = "Condor AI Generated NFT"
   const SYMBOL = "COAINFT"
-  const COST = ethers.utils.parseUnits("0.1", "ether") // 1 ETH
+  const COST = ethers.utils.parseUnits("0.01", "ether") // 1 ETH
 
   const NFT = await hre.ethers.getContractFactory("NFT")
   const nft = await NFT.deploy(NAME, SYMBOL, COST)

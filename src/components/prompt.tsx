@@ -39,7 +39,6 @@ const Prompt = (props: Props): JSXElement => {
 			)
 				.then((response) => {
 					try {
-						console.log(response);
 						const type = response.headers["content-type"];
 						const data = response.data;
 

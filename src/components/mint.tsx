@@ -17,7 +17,6 @@ const Mint = (props: Props): JSXElement => {
 	const [nft, setNFT] = createSignal<ethers.Contract>();
 
 	const handleSubmit = async () => {
-		console.log("minting image");
 		setLoading(true);
 		// load the file from disk
 		const image = new File([props.imageData.image], "image.jpeg", {
@@ -83,17 +82,25 @@ const Mint = (props: Props): JSXElement => {
 					),
 				});
 				const result = await transaction.wait();
-				const [transferEvent] = result.events;
-				const { tokenId } = transferEvent.args;
+				const transferEvents = result.events;
+				let tokenIdData = {};
+				if (transferEvents) {
+					transferEvents.forEach((event: any) => {
+						if(event.args){
+							const { tokendId } = event.args;
+							tokenIdData = { ...tokendId };
+						}
+					});
+				}
 				const currentTokenIDs = localStorage.getItem("tokenIDs");
 				if (currentTokenIDs) {
 					const idsObject = JSON.parse(currentTokenIDs);
-					idsObject.push({ ...tokenId, name, description, url });
+					idsObject.push({ ...tokenIdData, name, description, url });
 					localStorage.setItem("tokenIDs", JSON.stringify(idsObject));
 				} else {
 					localStorage.setItem(
 						"tokenIDs",
-						JSON.stringify([{ ...tokenId, name, description, url }])
+						JSON.stringify([{ ...tokenIdData, name, description, url }])
 					);
 				}
 				alert("Image minted successfully");

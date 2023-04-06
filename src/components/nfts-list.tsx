@@ -37,13 +37,11 @@ const NFTsList = (): JSXElement => {
 	const connectToDefaultWallet = async () => {
 		if (window.ethereum) {
 			const provider = new ethers.providers.Web3Provider(window.ethereum);
-			console.log(provider);
 			setCurrentProvider(provider);
 			const accounts = await window.ethereum.request({
 				method: "eth_requestAccounts",
 			});
 			const account = await provider.getSigner().getAddress();
-			console.log("account", account, accounts);
 			setAllWallets(accounts);
 			if (account) {
 				setCurrentAccount(account);
@@ -69,7 +67,6 @@ const NFTsList = (): JSXElement => {
 		const data = localStorage.getItem("tokenIDs");
 		if (data) {
 			const tokenIDs = JSON.parse(data);
-			console.log("tokenIDs", tokenIDs);
 			setTokensMetadata(tokenIDs);
 		}
 	};

@@ -9,7 +9,8 @@
     "test-contracts": "hardhat test",
     "compile-contracts": "hardhat compile",
     "start-node": "hardhat node",
-    "deploy-contracts-local": "hardhat run scripts/deploy.ts --network localhost"
+    "deploy-contracts-local": "hardhat run scripts/deploy.ts --network localhost",
+    "deploy-contracts-mumbai": "hardhat run scripts/deploy.ts --network polygon_mumbai"
   },
   "license": "MIT",
   "devDependencies": {
@@ -29,6 +30,7 @@
     "@types/node": "^18.15.11",
     "autoprefixer": "^10.4.13",
     "chai": "^4.3.7",
+    "dotenv": "^16.0.3",
     "hardhat": "^2.13.0",
     "hardhat-gas-reporter": "^1.0.9",
     "postcss": "^8.4.21",

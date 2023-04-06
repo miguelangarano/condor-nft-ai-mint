@@ -32,3 +32,8 @@ Your app is ready to be deployed!
 ## Deployment
 
 You can deploy the `dist` folder to any static host provider (netlify, surge, now, etc.)
+
+
+## Important notes
+The current configuration of .env and contract-config.json files about fees of minting are working fine but it
+is not working on hardhat local network.

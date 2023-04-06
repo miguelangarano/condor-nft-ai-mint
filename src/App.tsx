@@ -35,13 +35,11 @@ const App: Component = () => {
 	const connectToDefaultWallet = async () => {
 		if (window.ethereum) {
 			const provider = new ethers.providers.Web3Provider(window.ethereum);
-			console.log(provider);
 			setCurrentProvider(provider);
 			const accounts = await window.ethereum.request({
 				method: "eth_requestAccounts",
 			});
 			const account = await provider.getSigner().getAddress();
-			console.log("account", account, accounts);
 			setAllWallets(accounts);
 			if (account) {
 				setCurrentAccount(account);
@@ -109,6 +107,7 @@ const App: Component = () => {
 			<TopBar
 				account={currentAccount()}
 				connect={connectToDefaultWallet}
+				wallets={allWallets()}
 			/>
 			<div class="flex-1 overflow-y-scroll bg-gray-800 pb-[80%] md:pb-[25%] pt-4 px-2">
 				{renderCurrentStepComponent()}
